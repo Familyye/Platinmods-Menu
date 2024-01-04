@@ -1,6 +1,3 @@
-#include <jni.h>
-#include <string>
-
 #define CATEGORY_NONE 1
 #define CATEGORY_PLAYER 2
 #define CATEGORY_PROFILE 3
@@ -844,7 +841,7 @@ void resetMenu(JNIEnv *env, jobject thiz, jint id, jobject textView) {
     resetButtons(env, thiz, id);
 
     if (id < CATEGORY_TITLE_TEXT) {
-        toggleButton(id);
+        toggleButton(env, thiz, id);
     } else {
         updateColors(env, id);
     }
