@@ -29,6 +29,59 @@
 #define FUNCTION_AIMBOT 504
 #define FUNCTION_WALKING_NUKE 505
 
-void toggleButton(int id) {
+void toggleButton([[maybe_unused]] int id) {
 
 }
+/***** FUNCTIONS FROM STANDOFF2 *****/
+/*
+ * AimController.SetRotation
+ * ArmsRaceRpcHelper.ctor
+ * ArmsRaceRpcHelper.LevelDown
+ * ArmsRaceRpcHelper.LevelUp
+ * BombManager.CanDefuse
+ * BombManager.CanPlantBomb
+ * BombManager.IsBomberMe
+ * BombManager.IsInBombSite
+ * CameraScopeZoomer.Update
+ * Camera.WorldToScreenPoint
+ * Camera.get_main
+ * ChatManager.SendToAll
+ * ChatManager.ctor
+ * Component.get_transform
+ * CrouchState.OnStateEntered
+ * DefuseController.AddMoney
+ * DefuseController.ctor
+ * GameController.SetPlayerWeapon
+ * GameController.SpawnPlayer
+ * GameController.ctor
+ * GameManager.InitGame
+ * GrenadeManager.ThrowGrenade
+ * GrenadeManager.Update
+ * GunController.IsFiring
+ * GunController.accuracyMult
+ * GunController.recoilMult
+ * GunController.get_MagazineCapacity
+ * NetworkingPeer.set_PlayerName
+ * PhotonView.get_isMine
+ * PhotonView.get_owner
+ * PlayerController.GetHealth
+ * PlayerController.Update
+ * PlayerController.get_AimController
+ * PlayerController.get_Player
+ * PlayerControls.RequestFiringDisable
+ * PlayerControls.RequestMovementDisable
+ * PlayerTranslationData.IsVelocitySynchronized
+ * PlayerTranslationData.WeaponSpeedMult
+ * PlayerTranslationData.get_velocity
+ * ProfileManager.AddLevelXp
+ * ProfileManager.GetLevelID
+ * ProfileManager.GetLevelUpXp
+ * ProfileManager.ctor
+ * Screen.get_height
+ * Screen.get_width
+ * String.CreateString
+ * Transform.get_position_Injected
+ * Transform.set_position_Injected
+ * WeaponController.Initialize
+ * and egl hook for chams
+ */
