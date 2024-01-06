@@ -31,8 +31,8 @@ public class Reborn extends Service {
     public RelativeLayout menu;
     public boolean resetAvailable;
     public WindowManager windowManager;
-    public WindowManager.LayoutParams iconOverlayParam;
     public WindowManager.LayoutParams menuParam;
+    public WindowManager.LayoutParams iconOverlayParam;
 
     public native void resetMenu(int category, TextView textView);
     private static native void Initialize(Context context);
@@ -163,7 +163,7 @@ public class Reborn extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         stopSelf();
         try {
-            Thread.sleep(100L);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

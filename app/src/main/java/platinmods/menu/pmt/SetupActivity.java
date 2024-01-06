@@ -7,8 +7,11 @@ import android.os.Handler;
 import android.app.Activity;
 import android.widget.Toast;
 import android.content.Intent;
+import android.view.ViewGroup;
+import android.graphics.Color;
 import android.app.AlertDialog;
 import android.provider.Settings;
+import android.widget.LinearLayout;
 import android.content.pm.PackageManager;
 
 public class SetupActivity extends Activity {
@@ -31,7 +34,14 @@ public class SetupActivity extends Activity {
 
     void _startEngine() {
         startUp();
-        finish();
+        setContentView(new LinearLayout(this) {
+            LinearLayout get() {
+                setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                setBackgroundColor(Color.WHITE);
+                return this;
+            }
+        }.get());
+        //finish();
     }
 
     @Override
