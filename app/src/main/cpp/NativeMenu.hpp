@@ -301,11 +301,16 @@ private:
                             menu);
 
         jobject menuParam = getWMParams(env, 640, height);
+        env->SetIntField(menuParam, env->GetFieldID(
+                env->FindClass("android/view/WindowManager$LayoutParams"),
+                "x",
+                "I"), 480);
 
-        env->SetObjectField(thiz,env->GetFieldID(
-                Reborn,
-                "menuParam",
-                "Landroid/view/WindowManager$LayoutParams;"), menuParam);
+        /*
+         * 640 - menu size
+         * 320 - menu size / 2 = function list
+         * 480 - function list * 1.5 = menu position
+         */
 
         jobject windowManager = env->GetObjectField(thiz, env->GetFieldID(
                 Reborn,

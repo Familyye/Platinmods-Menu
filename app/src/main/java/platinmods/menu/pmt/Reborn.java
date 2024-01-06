@@ -24,14 +24,12 @@ public class Reborn extends Service {
 
     public int width;
     public int height;
-    public Context reborn;
     public ImageView pmtIcon;
     public TextView menuTitle;
     public RelativeLayout icon;
     public RelativeLayout menu;
     public boolean resetAvailable;
     public WindowManager windowManager;
-    public WindowManager.LayoutParams menuParam;
     public WindowManager.LayoutParams iconOverlayParam;
 
     public native void resetMenu(int category, TextView textView);
@@ -67,7 +65,6 @@ public class Reborn extends Service {
         submitPID(Process.myPid());
         Initialize(this);
 
-        this.reborn = this;
         this.windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         this.width = this.windowManager.getDefaultDisplay().getWidth();
         this.height = this.windowManager.getDefaultDisplay().getHeight();
@@ -156,7 +153,7 @@ public class Reborn extends Service {
     public void onCreate() {
         super.onCreate();
         menuSystem();
-        PerformLoop();
+        //PerformLoop();
     }
 
     @Override
