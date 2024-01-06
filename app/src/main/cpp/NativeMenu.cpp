@@ -5,7 +5,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
 
     switch (selected_category) {
         case category::none:
-            toggles.push_back({ category::close, "Platinmods<3\nMain Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nMain Menu" });
             toggles.push_back({ category::player, "Player Menu" });
             toggles.push_back({ category::profile, "Profile Menu" });
             toggles.push_back({ category::weapons, "Weapons Menu" });
@@ -16,7 +16,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::player:
-            toggles.push_back({ category::close, "Platinmods<3\nPlayer Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nPlayer Menu" });
             toggles.push_back({ 1, "Infinite Ammo" });
             toggles.push_back({ 2, "Rapid Fire" });
             toggles.push_back({ 3, "No Spread" });
@@ -28,7 +28,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::profile:
-            toggles.push_back({ category::close, "Platinmods<3\nProfile Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nProfile Menu" });
             toggles.push_back({ 1, "Level Up" });
             toggles.push_back({ 2, "Custom Name" });
             toggles.push_back({ 3, "Double Xp" });
@@ -36,12 +36,12 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::weapons:
-            toggles.push_back({ category::close, "Platinmods<3\nWeapons Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nWeapons Menu" });
             toggles.push_back({ category::none, "Back..." });
             break;
 
         case category::gameplay:
-            toggles.push_back({ category::close, "Platinmods<3\nGameplay Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nGameplay Menu" });
             toggles.push_back({ 1, "Super Speed" });
             toggles.push_back({ 2, "Respawn" });
             toggles.push_back({ 3, "Movement Always Allowed" });
@@ -50,7 +50,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::gamemodes:
-            toggles.push_back({ category::close, "Platinmods<3\nGamemodes Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nGamemodes Menu" });
             toggles.push_back({ 1, "Level Up" });
             toggles.push_back({ 2, "Level Down" });
             toggles.push_back({ 3, "Add Money" });
@@ -61,7 +61,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::extras:
-            toggles.push_back({ category::close, "Platinmods<3\nExtras  Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nExtras  Menu" });
             toggles.push_back({ 1, "Respawn Before Die" });
             toggles.push_back({ 2, "Spam Chat" });
             toggles.push_back({ 3, "Jump Exploit" });
@@ -73,7 +73,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::customization:
-            toggles.push_back({ category::close, "Platinmods<3\nCustomization Menu" });
+            toggles.push_back({ category::icon, "Platinmods<3\nCustomization Menu" });
             toggles.push_back({ category::customization_title_text, "Title Text Color" });
             toggles.push_back({ category::customization_mod_text, "Mod Text Color" });
             toggles.push_back({ category::customization_mod_highlight, "Mod Highlight Color" });
@@ -82,7 +82,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::customization_title_text:
-            toggles.push_back({ category::close, "Platinmods<3\nTitle Text" });
+            toggles.push_back({ category::icon, "Platinmods<3\nTitle Text" });
             toggles.push_back({ category::customization_title_text + (int) color::red, "Red Title" });
             toggles.push_back({ category::customization_title_text + (int) color::green, "Green Title" });
             toggles.push_back({ category::customization_title_text + (int) color::blue, "Blue Title" });
@@ -95,7 +95,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::customization_mod_text:
-            toggles.push_back({ category::close, "Platinmods<3\nMod Text" });
+            toggles.push_back({ category::icon, "Platinmods<3\nMod Text" });
             toggles.push_back({ category::customization_mod_text + (int) color::red, "Red Text" });
             toggles.push_back({ category::customization_mod_text + (int) color::green, "Green Text" });
             toggles.push_back({ category::customization_mod_text + (int) color::blue, "Blue Text" });
@@ -108,7 +108,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::customization_mod_highlight:
-            toggles.push_back({ category::close, "Platinmods<3\nMod Highlight" });
+            toggles.push_back({ category::icon, "Platinmods<3\nMod Highlight" });
             toggles.push_back({ category::customization_mod_highlight + (int) color::red, "Red Highlight" });
             toggles.push_back({ category::customization_mod_highlight + (int) color::green, "Green Highlight" });
             toggles.push_back({ category::customization_mod_highlight + (int) color::blue, "Blue Highlight" });
@@ -121,7 +121,7 @@ std::vector<Toggle> NativeMenu::getToggles() {
             break;
 
         case category::customization_menu_bg:
-            toggles.push_back({ category::close, "Platinmods<3\nBackground" });
+            toggles.push_back({ category::icon, "Platinmods<3\nBackground" });
             toggles.push_back({ category::customization_menu_bg + (int) color::red, "Red BG" });
             toggles.push_back({ category::customization_menu_bg + (int) color::green, "Green BG" });
             toggles.push_back({ category::customization_menu_bg + (int) color::blue, "Blue BG" });
@@ -177,6 +177,9 @@ Callback NativeMenu::onToggle(int id) {
 
         case category::customization_menu_bg:
             return { false, false, true };
+
+        case 1:
+            return { true, false, true };
 
         default:
             if (id > category::customization_menu_bg) {

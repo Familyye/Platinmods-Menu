@@ -8,8 +8,10 @@ add_library(
         ${CMAKE_PROJECT_NAME}
         SHARED
         Main.cpp
-        Hack.cpp
         NativeMenu.cpp
+        Substrate/hde64.c
+        Substrate/SubstrateHook.cpp
+        Substrate/SubstratePosixMemory.cpp
 )
 
 target_link_libraries(

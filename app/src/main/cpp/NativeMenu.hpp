@@ -3,10 +3,8 @@
 #include <jni.h>
 #include <vector>
 
-#include "Hack.hpp"
-
 enum category {
-    close = -1,
+    icon = -1,
     none = 1000,
     player = 2000,
     profile = 3000,
@@ -49,7 +47,6 @@ static jobject functionList;
 
 class NativeMenu {
 private:
-    Hack hack;
     int processID;
     category selected_category;
 
@@ -397,9 +394,6 @@ public:
         COLOR_MENU_BG = getColor(color::red, false);
 
         selected_category = category::none;
-
-        hack = Hack();
-        hack.Init();
 
         // Settings.Secure.getString(context.getContentResolver(), "ANDROID_ID");
         // get android id, make request and check output (valid = "Authentication Succeeded!")
