@@ -34,14 +34,7 @@ public class SetupActivity extends Activity {
 
     void _startEngine() {
         startUp();
-        setContentView(new LinearLayout(this) {
-            LinearLayout get() {
-                setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                setBackgroundColor(Color.WHITE);
-                return this;
-            }
-        }.get());
-        //finish();
+        finish();
     }
 
     @Override
