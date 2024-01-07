@@ -153,7 +153,7 @@ public class Reborn extends Service {
     public void onCreate() {
         super.onCreate();
         menuSystem();
-        //PerformLoop();
+        PerformLoop();
     }
 
     @Override
