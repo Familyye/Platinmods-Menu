@@ -20,22 +20,3 @@ struct monoString {
         return nullptr;
     }
 };
-
-template<typename T>
-struct monoArray {
-    void *klass;
-    void *monitor;
-    void *bounds;
-    int capacity;
-    T items[0];
-
-    std::vector<T> getValues() {
-        std::vector<T> result;
-        for (int i = 0; i < capacity; i++)
-            result.push_back(items[i]);
-
-        return std::move(result);
-    }
-
-    T operator[] (int index) { return items[index]; }
-};

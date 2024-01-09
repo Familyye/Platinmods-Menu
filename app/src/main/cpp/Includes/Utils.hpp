@@ -1,6 +1,6 @@
 #include <android/log.h>
 
-#define LOG(...) __android_log_print(ANDROID_LOG_INFO, "Platinmods", ##__VA_ARGS__)
+#define LOG(...) __android_log_print(ANDROID_LOG_DEBUG, "Platinmods", ##__VA_ARGS__)
 
 struct map_t {
     size_t size;

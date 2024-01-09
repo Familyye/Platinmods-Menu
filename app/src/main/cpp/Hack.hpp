@@ -3,15 +3,14 @@
 #include <string>
 #include <unistd.h>
 
+#include "Dobby/dobby.h"
 #include "Includes/Utils.hpp"
 #include "Includes/Struct.hpp"
-
-#include "Dobby/dobby.h"
 
 map_t libil2cpp;
 
 #define import(function, offset) *(void **)(&function) = (void *)(libil2cpp.start + offset)
-#define hook(offset, fake, orig) DobbyHook((void *) (libil2cpp.start + offset), (void *) fake, (void **) orig)
+#define hook(offset, fake, orig) DobbyHook((void *) (libil2cpp.start + offset), (void *) fake, (void **) &orig)
 
 void Hack() {
     do {
