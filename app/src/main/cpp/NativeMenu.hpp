@@ -212,6 +212,9 @@ private:
         jint width = env->GetIntField(thiz, env->GetFieldID(Reborn, "width", "I"));
         jint height = env->GetIntField(thiz, env->GetFieldID(Reborn, "height", "I"));
 
+        int menuSize = width / 3;
+        int menuXPosition = menuSize * 1.5f;
+
         jclass LinearLayout$LayoutParams = env->FindClass("android/widget/LinearLayout$LayoutParams");
         jobject mainParams = env->NewObject(LinearLayout$LayoutParams,
                                             env->GetMethodID(LinearLayout$LayoutParams, "<init>", "(II)V"),
@@ -300,17 +303,11 @@ private:
                             env->GetFieldID(Reborn, "menu", "Landroid/widget/RelativeLayout;"),
                             menu);
 
-        jobject menuParam = getWMParams(env, 640, height);
+        jobject menuParam = getWMParams(env, menuSize, height);
         env->SetIntField(menuParam, env->GetFieldID(
                 env->FindClass("android/view/WindowManager$LayoutParams"),
                 "x",
-                "I"), 480);
-
-        /*
-         * 640 - menu size
-         * 320 - menu size / 2 = function list
-         * 480 - function list * 1.5 = menu position
-         */
+                "I"), menuXPosition);
 
         jobject windowManager = env->GetObjectField(thiz, env->GetFieldID(
                 Reborn,
