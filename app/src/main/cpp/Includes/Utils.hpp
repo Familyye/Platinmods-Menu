@@ -2,40 +2,44 @@
 
 #define LOG(...) __android_log_print(ANDROID_LOG_INFO, "Platinmods", ##__VA_ARGS__)
 
-class map_t {
-public:
-    size_t length;
-    unsigned long long startAddress;
-    unsigned long long endAddress;
+struct map_t {
+    size_t size;
+    std::string path;
+    uintptr_t start, end;
 
-    map_t() : startAddress(-1), endAddress(-1), length(-1) {}
+    bool valid() {
+        return (start && end && size);
+    }
 
-    inline bool isValid() const { return (startAddress && endAddress && length); }
+    map_t() : start(0), end(0), size(0) {}
 };
 
-map_t getMap(const char *name) {
-    map_t result {};
-
+map_t getMap(const char *moduleName) {
     FILE *file = fopen("/proc/self/maps", "r");
     if (file) {
         char line[512];
-
         while (fgets(line, sizeof(line), file)) {
-            if (!strstr(line, name))
+            map_t memory;
+            char name[256];
+
+            sscanf(line,
+                   "%x-%x %*s %*llx %*s %*lu %s",
+                   &memory.start,
+                   &memory.end,
+                   name);
+
+            if (!strstr(name, moduleName))
                 continue;
 
-            map_t map {};
-            sscanf(line, "%llx-%llx",
-                   &map.startAddress, &map.endAddress);
+            memory.path = name;
+            memory.size = memory.end - memory.start;
 
-            map.length = map.endAddress - map.startAddress;
-
-            if (map.isValid())
-                result = map;
+            if (memory.valid())
+                return memory;
         }
 
         fclose(file);
     }
 
-    return result;
+    return {};
 }

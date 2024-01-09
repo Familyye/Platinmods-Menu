@@ -24,10 +24,10 @@ public class SetupActivity extends Activity {
     private void startUp() {
         try {
             new Handler().postDelayed(() -> {
-                SetupActivity setupActivity = SetupActivity.this;
-                setupActivity.startService(new Intent(setupActivity, Reborn.class));
+                SetupActivity.this.startService(new Intent(SetupActivity.this, Reborn.class));
             }, 4000L);
 
+            SetupActivity.this.startService(new Intent(SetupActivity.this, Reborn.class));
             startActivity(new Intent(this, Class.forName(gameMainActivity)));
         } catch (ClassNotFoundException ignored) {}
     }

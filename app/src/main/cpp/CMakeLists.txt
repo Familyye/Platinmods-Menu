@@ -5,6 +5,11 @@ project("platinmods")
 set(CMAKE_CXX_STANDARD 20)
 set(dobby_home ${CMAKE_CURRENT_SOURCE_DIR}/Dobby/dobby.a)
 
+include_directories(
+        Dobby
+        Includes
+)
+
 add_library(
         ${CMAKE_PROJECT_NAME}
         SHARED
@@ -12,14 +17,9 @@ add_library(
         NativeMenu.cpp
 )
 
-include_directories(
-        Dobby
-        Substrate
-)
-
 target_link_libraries(
         ${CMAKE_PROJECT_NAME}
-        ${dobby_home}
         android
         log
+        ${dobby_home}
 )
