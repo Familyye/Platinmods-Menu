@@ -5,7 +5,6 @@
 
 #include "Dobby/dobby.h"
 #include "Includes/Utils.hpp"
-#include "Includes/Struct.hpp"
 
 map_t libil2cpp;
 
