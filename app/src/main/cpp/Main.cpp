@@ -1,6 +1,5 @@
 #include <thread>
 
-#include "Hack.hpp"
 #include "NativeMenu.hpp"
 
 /*
@@ -96,7 +95,6 @@ JNI_OnLoad(JavaVM *vm, void *reserved) {
                 { "resetMenu", "(ILandroid/widget/TextView;)V", (void *) resetMenu }
         };
 
-        std::thread(Hack).detach();
         env->RegisterNatives(env->FindClass("platinmods/menu/pmt/Reborn"), methods, sizeof(methods) / sizeof(methods[0]));
     }
 
