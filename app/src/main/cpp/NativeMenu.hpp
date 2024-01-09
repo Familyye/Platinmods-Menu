@@ -213,7 +213,7 @@ private:
         jint height = env->GetIntField(thiz, env->GetFieldID(Reborn, "height", "I"));
 
         int menuSize = width / 3;
-        int menuXPosition = menuSize * 1.5f;
+        int menuXPosition = (menuSize / 2) * 1.5f;
 
         jclass LinearLayout$LayoutParams = env->FindClass("android/widget/LinearLayout$LayoutParams");
         jobject mainParams = env->NewObject(LinearLayout$LayoutParams,
