@@ -2,6 +2,7 @@
 
 #include <jni.h>
 #include <vector>
+#include "Hack.hpp"
 
 enum category {
     icon = -1,
@@ -45,8 +46,7 @@ static jobject menu;
 static jobject title;
 static jobject functionList;
 
-class NativeMenu {
-private:
+namespace NativeMenu {
     int processID;
     category selected_category;
 
@@ -54,27 +54,6 @@ private:
     int COLOR_MOD_TEXT;
     int COLOR_MOD_HIGHLIGHT;
     int COLOR_MENU_BG;
-
-    std::vector<Toggle> getToggles();
-
-    Callback onToggle(int id);
-
-    void showToast(JNIEnv *env, jobject thiz, const char *function, bool toggled) {
-        int LENGTH_LONG = 1;
-
-        char text[256];
-        sprintf(text, "%s: %s",
-                function,
-                toggled ? "On" : "Off");
-
-        jclass Toast = env->FindClass("android/widget/Toast");
-        jobject toast = env->CallStaticObjectMethod(Toast,
-                                                    env->GetStaticMethodID(Toast, "makeText", "(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;"),
-                                                    thiz, env->NewStringUTF(text), LENGTH_LONG);
-
-        env->CallVoidMethod(toast,
-                            env->GetMethodID(Toast, "show", "()V"));
-    }
 
     int getColor(int id, bool isDefault) {
         switch (id) {
@@ -106,382 +85,200 @@ private:
         return 0;
     }
 
-    jobject getWMParams(JNIEnv *env, jint width, jint height) {
-        int VERSION_O = 26;
-        int TRANSLUCENT = -3;
-        int TYPE_PHONE = 2002;
-        int FLAG_NOT_FOCUSABLE = 8;
-        int TYPE_APPLICATION_OVERLAY = 2038;
+    std::vector<Toggle> getToggles() {
+        std::vector<Toggle> toggles;
 
-        jclass Build$VERSION = env->FindClass("android/os/Build$VERSION");
-        jint SDK_INT = env->GetStaticIntField(
-                Build$VERSION,
-                env->GetStaticFieldID(Build$VERSION, "SDK_INT", "I"));
+        switch (selected_category) {
+            case category::none:
+                toggles.push_back({ category::icon, "Platinmods<3\nMain Menu" });
+                toggles.push_back({ category::player, "Player Menu" });
+                toggles.push_back({ category::profile, "Profile Menu" });
+                toggles.push_back({ category::weapons, "Weapons Menu" });
+                toggles.push_back({ category::gameplay, "Gameplay Menu" });
+                toggles.push_back({ category::gamemodes, "Gamemodes Menu" });
+                toggles.push_back({ category::extras, "Extras Menu" });
+                toggles.push_back({ category::customization, "Customization Menu" });
+                break;
 
-        jclass WindowManager$LayoutParams = env->FindClass("android/view/WindowManager$LayoutParams");
-        return env->NewObject(WindowManager$LayoutParams,
-                              env->GetMethodID(WindowManager$LayoutParams,"<init>", "(IIIII)V"),
-                              width, height, SDK_INT >= VERSION_O ? TYPE_APPLICATION_OVERLAY : TYPE_PHONE, FLAG_NOT_FOCUSABLE, TRANSLUCENT);
-    }
+            case category::player:
+                toggles.push_back({ category::icon, "Platinmods<3\nPlayer Menu" });
+                toggles.push_back({ category::player + 1, "Infinite Ammo" });
+                toggles.push_back({ category::player + 2, "Rapid Fire" });
+                toggles.push_back({ category::player + 3, "No Spread" });
+                toggles.push_back({ category::player + 4, "No Recoil" });
+                toggles.push_back({ category::player + 5, "Field of View" });
+                toggles.push_back({ category::player + 6, "Wallhack" });
+                toggles.push_back({ category::player + 7, "Chams" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-    void initIcon(JNIEnv *env, jobject thiz) {
-        int TOP = 48;
-        int LEFT = 3;
-        int WRAP_CONTENT = -2;
+            case category::profile:
+                toggles.push_back({ category::icon, "Platinmods<3\nProfile Menu" });
+                toggles.push_back({ category::profile + 1, "Level Up" });
+                toggles.push_back({ category::profile + 2, "Custom Name" });
+                toggles.push_back({ category::profile + 3, "Double Xp" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-        jclass Reborn = env->GetObjectClass(thiz);
-        jobject iconOverlayParams = getWMParams(env, 320, 320);
+            case category::weapons:
+                toggles.push_back({ category::icon, "Platinmods<3\nWeapons Menu" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-        env->SetIntField(iconOverlayParams, env->GetFieldID(
-                env->FindClass("android/view/WindowManager$LayoutParams"),
-                "gravity",
-                "I"), TOP | LEFT);
+            case category::gameplay:
+                toggles.push_back({ category::icon, "Platinmods<3\nGameplay Menu" });
+                toggles.push_back({ category::gameplay + 1, "Super Speed" });
+                toggles.push_back({ category::gameplay + 2, "Respawn" });
+                toggles.push_back({ category::gameplay + 3, "Movement Always Allowed" });
+                toggles.push_back({ category::gameplay + 4, "Firing Always Allowed" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-        env->SetObjectField(thiz,env->GetFieldID(
-                Reborn,
-                "iconOverlayParam",
-                "Landroid/view/WindowManager$LayoutParams;"), iconOverlayParams);
+            case category::gamemodes:
+                toggles.push_back({ category::icon, "Platinmods<3\nGamemodes Menu" });
+                toggles.push_back({ category::gamemodes + 1, "Level Up" });
+                toggles.push_back({ category::gamemodes + 2, "Level Down" });
+                toggles.push_back({ category::gamemodes + 3, "Add Money" });
+                toggles.push_back({ category::gamemodes + 4, "Always Hold Bomb" });
+                toggles.push_back({ category::gamemodes + 5, "Plant Anywhere" });
+                toggles.push_back({ category::gamemodes + 6, "Defuse Anywhere" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-        jclass RelativeLayout$LayoutParams = env->FindClass("android/widget/RelativeLayout$LayoutParams");
-        jobject relativeLayoutParams = env->NewObject(RelativeLayout$LayoutParams, env->GetMethodID(
-                RelativeLayout$LayoutParams,
-                "<init>",
-                "(II)V"), WRAP_CONTENT, WRAP_CONTENT);
+            case category::extras:
+                toggles.push_back({ category::icon, "Platinmods<3\nExtras  Menu" });
+                toggles.push_back({ category::extras + 1, "Respawn Before Die" });
+                toggles.push_back({ category::extras + 2, "Spam Chat" });
+                toggles.push_back({ category::extras + 3, "Jump Exploit" });
+                toggles.push_back({ category::extras + 4, "Position Menu" });
+                toggles.push_back({ category::extras + 5, "Telekill" });
+                toggles.push_back({ category::extras + 6, "Aimbot" });
+                toggles.push_back({ category::extras + 7, "Walking Nuke" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-        jclass RelativeLayout = env->FindClass("android/widget/RelativeLayout");
-        jobject icon = env->NewObject(
-                RelativeLayout,
-                env->GetMethodID(RelativeLayout, "<init>", "(Landroid/content/Context;)V"),
-                thiz);
+            case category::customization:
+                toggles.push_back({ category::icon, "Platinmods<3\nCustomization Menu" });
+                toggles.push_back({ category::customization_title_text, "Title Text Color" });
+                toggles.push_back({ category::customization_mod_text, "Mod Text Color" });
+                toggles.push_back({ category::customization_mod_highlight, "Mod Highlight Color" });
+                toggles.push_back({ category::customization_menu_bg, "Menu Background Color" });
+                toggles.push_back({ category::none, "Back..." });
+                break;
 
-        env->CallVoidMethod(
-                icon,
-                env->GetMethodID(RelativeLayout, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                relativeLayoutParams);
+            case category::customization_title_text:
+                toggles.push_back({ category::icon, "Platinmods<3\nTitle Text" });
+                toggles.push_back({ category::customization_title_text + (int) color::red, "Red Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::green, "Green Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::blue, "Blue Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::yellow, "Yellow Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::orange, "Orange Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::pink, "Pink Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::purple, "Purple Title" });
+                toggles.push_back({ category::customization_title_text + (int) color::black, "Black Title" });
+                toggles.push_back({ category::customization, "Back..." });
+                break;
 
-        jclass LinearLayout$LayoutParams = env->FindClass("android/widget/LinearLayout$LayoutParams");
-        jobject pmtIconParams = env->NewObject(
-                LinearLayout$LayoutParams,
-                env->GetMethodID(LinearLayout$LayoutParams, "<init>", "(II)V"),
-                274, 180);
+            case category::customization_mod_text:
+                toggles.push_back({ category::icon, "Platinmods<3\nMod Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::red, "Red Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::green, "Green Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::blue, "Blue Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::yellow, "Yellow Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::orange, "Orange Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::pink, "Pink Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::purple, "Purple Text" });
+                toggles.push_back({ category::customization_mod_text + (int) color::black, "Black Text" });
+                toggles.push_back({ category::customization, "Back..." });
+                break;
 
-        jclass ImageView = env->FindClass("android/widget/ImageView");
-        jobject pmtIcon = env->NewObject(
-                ImageView,
-                env->GetMethodID(ImageView, "<init>", "(Landroid/content/Context;)V"),
-                thiz);
+            case category::customization_mod_highlight:
+                toggles.push_back({ category::icon, "Platinmods<3\nMod Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::red, "Red Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::green, "Green Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::blue, "Blue Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::yellow, "Yellow Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::orange, "Orange Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::pink, "Pink Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::purple, "Purple Highlight" });
+                toggles.push_back({ category::customization_mod_highlight + (int) color::black, "Black Highlight" });
+                toggles.push_back({ category::customization, "Back..." });
+                break;
 
-        env->CallVoidMethod(
-                pmtIcon,
-                env->GetMethodID(ImageView, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                pmtIconParams);
+            case category::customization_menu_bg:
+                toggles.push_back({ category::icon, "Platinmods<3\nBackground" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::red, "Red BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::green, "Green BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::blue, "Blue BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::yellow, "Yellow BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::orange, "Orange BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::pink, "Pink BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::purple, "Purple BG" });
+                toggles.push_back({ category::customization_menu_bg + (int) color::black, "Black BG" });
+                toggles.push_back({ category::customization, "Back..." });
+                break;
 
-        env->CallVoidMethod(icon,
-                            env->GetMethodID(RelativeLayout, "addView", "(Landroid/view/View;)V"),
-                            pmtIcon);
-
-        env->SetObjectField(thiz, env->GetFieldID(
-                Reborn,
-                "pmtIcon",
-                "Landroid/widget/ImageView;"), pmtIcon);
-
-        env->SetObjectField(thiz, env->GetFieldID(
-                Reborn,
-                "icon",
-                "Landroid/widget/RelativeLayout;"), icon);
-
-        jobject windowManager = env->GetObjectField(thiz, env->GetFieldID(
-                Reborn,
-                "windowManager",
-                "Landroid/view/WindowManager;"));
-
-        jclass WindowManager = env->FindClass("android/view/WindowManager");
-        env->CallVoidMethod(
-                windowManager,
-                env->GetMethodID(WindowManager, "addView", "(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V"),
-                icon, iconOverlayParams);
-    }
-
-    void initMenu(JNIEnv *env, jobject thiz) {
-        int GONE = 8;
-        int VERTICAL = 1;
-        int MATCH_PARENT = -1;
-        int WRAP_CONTENT = -2;
-
-        jclass Reborn = env->GetObjectClass(thiz);
-        jint width = env->GetIntField(thiz, env->GetFieldID(Reborn, "width", "I"));
-        jint height = env->GetIntField(thiz, env->GetFieldID(Reborn, "height", "I"));
-
-        int menuSize = width / 3;
-        int menuXPosition = (menuSize / 2) * 1.5f;
-
-        jclass LinearLayout$LayoutParams = env->FindClass("android/widget/LinearLayout$LayoutParams");
-        jobject mainParams = env->NewObject(LinearLayout$LayoutParams,
-                                            env->GetMethodID(LinearLayout$LayoutParams, "<init>", "(II)V"),
-                                            MATCH_PARENT, MATCH_PARENT);
-
-        jclass LinearLayout = env->FindClass("android/widget/LinearLayout");
-
-        functionList = env->NewGlobalRef(
-                env->NewObject(LinearLayout,
-                               env->GetMethodID(LinearLayout, "<init>", "(Landroid/content/Context;)V"),
-                               thiz));
-
-        env->CallVoidMethod(functionList,
-                            env->GetMethodID(LinearLayout, "setOrientation", "(I)V"),
-                            VERTICAL);
-
-        env->CallVoidMethod(functionList,
-                            env->GetMethodID(LinearLayout, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                            mainParams);
-
-        jobject scrollParams = env->NewObject(LinearLayout$LayoutParams,
-                                              env->GetMethodID(LinearLayout$LayoutParams, "<init>", "(II)V"),
-                                              MATCH_PARENT, 514);
-
-        jclass ScrollView = env->FindClass("android/widget/ScrollView");
-        jobject scrollView = env->NewObject(ScrollView,
-                                            env->GetMethodID(ScrollView, "<init>", "(Landroid/content/Context;)V"),
-                                            thiz);
-
-        env->CallVoidMethod(scrollView,
-                            env->GetMethodID(ScrollView, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                            scrollParams);
-
-        env->CallVoidMethod(scrollView,
-                            env->GetMethodID(ScrollView, "addView", "(Landroid/view/View;)V"),
-                            functionList);
-
-        jclass RelativeLayout$LayoutParams = env->FindClass("android/widget/RelativeLayout$LayoutParams");
-        jobject scrollBaseParams = env->NewObject(RelativeLayout$LayoutParams,
-                                                  env->GetMethodID(RelativeLayout$LayoutParams, "<init>", "(II)V"),
-                                                  WRAP_CONTENT, MATCH_PARENT);
-
-        env->CallVoidMethod(scrollBaseParams,
-                            env->GetMethodID(RelativeLayout$LayoutParams, "setMargins", "(IIII)V"),
-                            0, 180, 0, 0);
-
-        jclass RelativeLayout = env->FindClass("android/widget/RelativeLayout");
-        jobject scrollBase = env->NewObject(RelativeLayout,
-                                            env->GetMethodID(RelativeLayout, "<init>", "(Landroid/content/Context;)V"),
-                                            thiz);
-
-        env->CallVoidMethod(scrollBase,
-                            env->GetMethodID(RelativeLayout, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                            scrollBaseParams);
-
-        env->CallVoidMethod(scrollBase,
-                            env->GetMethodID(RelativeLayout, "addView", "(Landroid/view/View;)V"),
-                            scrollView);
-
-        jobject menuParams = env->NewObject(RelativeLayout$LayoutParams,
-                                            env->GetMethodID(RelativeLayout$LayoutParams, "<init>", "(II)V"),
-                                            width, WRAP_CONTENT);
-
-        menu = env->NewGlobalRef(
-                env->NewObject(RelativeLayout,
-                               env->GetMethodID(RelativeLayout, "<init>", "(Landroid/content/Context;)V"),
-                               thiz));
-
-        env->CallVoidMethod(menu,
-                            env->GetMethodID(RelativeLayout, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                            menuParams);
-
-        env->CallVoidMethod(menu,
-                            env->GetMethodID(RelativeLayout, "setVisibility", "(I)V"),
-                            GONE);
-
-        env->CallVoidMethod(menu,
-                            env->GetMethodID(RelativeLayout, "setBackgroundColor", "(I)V"),
-                            COLOR_MENU_BG);
-
-        env->CallVoidMethod(menu,
-                            env->GetMethodID(RelativeLayout, "addView", "(Landroid/view/View;)V"),
-                            scrollBase);
-
-        env->SetObjectField(thiz,
-                            env->GetFieldID(Reborn, "menu", "Landroid/widget/RelativeLayout;"),
-                            menu);
-
-        jobject menuParam = getWMParams(env, menuSize, height);
-        env->SetIntField(menuParam, env->GetFieldID(
-                env->FindClass("android/view/WindowManager$LayoutParams"),
-                "x",
-                "I"), menuXPosition);
-
-        jobject windowManager = env->GetObjectField(thiz, env->GetFieldID(
-                Reborn,
-                "windowManager",
-                "Landroid/view/WindowManager;"));
-
-        jclass WindowManager = env->FindClass("android/view/WindowManager");
-        env->CallVoidMethod(
-                windowManager,
-                env->GetMethodID(WindowManager, "addView", "(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V"),
-                menu, menuParam);
-    }
-
-    void createToggle(JNIEnv *env, jobject thiz, Toggle toggle) {
-        int MATCH_PARENT = -1;
-        int WRAP_CONTENT = -2;
-        int CENTER_HORIZONTAL = 1;
-        int TEXT_ALIGNMENT_CENTER = 4;
-
-        bool isTitle = toggle.onClickId < 0;
-
-        jclass RelativeLayout$LayoutParams = env->FindClass("android/widget/RelativeLayout$LayoutParams");
-        jobject params = env->NewObject(RelativeLayout$LayoutParams,
-                                        env->GetMethodID(RelativeLayout$LayoutParams, "<init>", "(II)V"),
-                                        MATCH_PARENT, WRAP_CONTENT);
-
-        jclass TextView = env->FindClass("android/widget/TextView");
-        jobject textView = env->NewObject(TextView,
-                                          env->GetMethodID(TextView, "<init>", "(Landroid/content/Context;)V"),
-                                          thiz);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setLayoutParams", "(Landroid/view/ViewGroup$LayoutParams;)V"),
-                            params);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setText", "(Ljava/lang/CharSequence;)V"),
-                            env->NewStringUTF(toggle.text));
-
-        env->CallVoidMethod(textView, env->GetMethodID(
-                TextView,
-                "setGravity",
-                "(I)V"), CENTER_HORIZONTAL);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setTextAlignment", "(I)V"),
-                            TEXT_ALIGNMENT_CENTER);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setShadowLayer", "(FFFI)V"),
-                            (jfloat) 12, (jfloat) 0, (jfloat) 0, isTitle ? COLOR_TITLE_TEXT : COLOR_MOD_TEXT);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setTextColor", "(I)V"),
-                            -1);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setTextSize", "(IF)V"),
-                            2, isTitle ? (jfloat) 23 : (jfloat) 19);
-
-        env->CallVoidMethod(isTitle ? menu : functionList,
-                            env->GetMethodID(env->FindClass("android/view/ViewGroup"), "addView", "(Landroid/view/View;)V"),
-                            textView);
-
-        if (isTitle) {
-            env->SetObjectField(thiz,
-                                env->GetFieldID(env->GetObjectClass(thiz), "menuTitle", "Landroid/widget/TextView;"),
-                                textView);
-
-            title = env->NewGlobalRef(textView);
+            default:
+                break;
         }
 
-        env->CallVoidMethod(thiz,
-                            env->GetMethodID(env->GetObjectClass(thiz), "setOnClickListener","(ZILandroid/widget/TextView;)V"),
-                            isTitle, toggle.onClickId, textView);
-    }
-public:
-    void submitPID(JNIEnv *env, jobject thiz, jint _processID) {
-        processID = _processID;
+        return toggles;
     }
 
-    void Initialize(JNIEnv *env, jclass clazz, jobject context) {
-        COLOR_TITLE_TEXT = getColor(color::red, true);
-        COLOR_MOD_TEXT = getColor(color::red, true);
-        COLOR_MOD_HIGHLIGHT = getColor(color::red, true);
-        COLOR_MENU_BG = getColor(color::red, false);
+    Callback onToggle(int id) {
+        switch (id) {
+            case category::none:
+                return { false, false, true };
 
-        selected_category = category::none;
+            case category::player:
+                return { false, false, true };
 
-        // Settings.Secure.getString(context.getContentResolver(), "ANDROID_ID");
-        // get android id, make request and check output (valid = "Authentication Succeeded!")
-    }
+            case category::profile:
+                return { false, false, true };
 
-    void createWindowParams(JNIEnv *env, jobject thiz) {
-        initIcon(env, thiz);
-        initMenu(env, thiz);
-    }
+            case category::weapons:
+                return { false, false, true };
 
-    void createViews(JNIEnv *env, jobject thiz) {
-        for (Toggle toggle : getToggles()) {
-            createToggle(env, thiz, toggle);
+            case category::gameplay:
+                return { false, false, true };
+
+            case category::gamemodes:
+                return { false, false, true };
+
+            case category::extras:
+                return { false, false, true };
+
+            case category::customization:
+                return { false, false, true };
+
+            case category::customization_title_text:
+                return { false, false, true };
+
+            case category::customization_mod_text:
+                return { false, false, true };
+
+            case category::customization_mod_highlight:
+                return { false, false, true };
+
+            case category::customization_menu_bg:
+                return { false, false, true };
+
+            default:
+                if (id > category::customization_menu_bg) {
+                    COLOR_MENU_BG = getColor(id - category::customization_menu_bg, false);
+                } else if (id > category::customization_mod_highlight) {
+                    COLOR_MOD_HIGHLIGHT = getColor(id - category::customization_mod_highlight, true);
+                } else if (id > category::customization_mod_text) {
+                    COLOR_MOD_TEXT = getColor(id - category::customization_mod_text, true);
+                } else if (id > category::customization_title_text) {
+                    COLOR_TITLE_TEXT = getColor(id - category::customization_title_text, true);
+                }
+
+                if (id > category::customization_title_text) {
+                    return { true, false, true };
+                }
+
+                return {};
         }
     }
-
-    void toggleMenu(JNIEnv *env, jobject thiz) {
-        int GONE = 8;
-        int VISIBLE = 0;
-
-        jclass RelativeLayout = env->FindClass("android/widget/RelativeLayout");
-        env->CallVoidMethod(menu,
-                            env->GetMethodID(RelativeLayout, "setVisibility", "(I)V"),
-                            GONE);
-
-        jobject icon = env->GetObjectField(thiz,
-                                           env->GetFieldID(env->GetObjectClass(thiz), "icon", "Landroid/widget/RelativeLayout;"));
-
-        env->CallVoidMethod(icon,
-                            env->GetMethodID(RelativeLayout, "setVisibility", "(I)V"),
-                            VISIBLE);
-
-        env->CallVoidMethod(menu,
-                            env->GetMethodID(env->FindClass("android/widget/RelativeLayout"), "removeView", "(Landroid/view/View;)V"),
-                            title);
-
-        env->CallVoidMethod(functionList,
-                            env->GetMethodID(env->FindClass("android/widget/LinearLayout"), "removeAllViews", "()V"));
-
-        selected_category = category::none;
-
-        createViews(env, thiz);
-    }
-
-    void changingMenu(JNIEnv *env, jobject thiz, jobject textView) {
-        jclass TextView = env->GetObjectClass(textView);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setBackgroundColor", "(I)V"),
-                            COLOR_MOD_HIGHLIGHT);
-    }
-
-    void resetMenu(JNIEnv *env, jobject thiz, jint id, jobject textView) {
-        jclass TextView = env->GetObjectClass(textView);
-
-        env->CallVoidMethod(textView,
-                            env->GetMethodID(TextView, "setBackgroundColor", "(I)V"),
-                            0); // transparent
-
-        Callback callback = onToggle(id);
-
-        if (callback.updateViews) {
-            env->CallVoidMethod(menu,
-                                env->GetMethodID(env->FindClass("android/widget/RelativeLayout"), "removeView", "(Landroid/view/View;)V"),
-                                title);
-
-            env->CallVoidMethod(functionList,
-                                env->GetMethodID(env->FindClass("android/widget/LinearLayout"), "removeAllViews", "()V"));
-
-            if (callback.toggled) {
-                jclass RelativeLayout = env->FindClass("android/widget/RelativeLayout");
-                env->CallVoidMethod(menu,
-                                    env->GetMethodID(RelativeLayout, "setBackgroundColor", "(I)V"),
-                                    COLOR_MENU_BG);
-            } else {
-                selected_category = (category) id;
-            }
-
-            createViews(env, thiz);
-        }
-
-        if (callback.callToast) {
-            jstring text = (jstring) env->CallObjectMethod(textView,
-                                                           env->GetMethodID(TextView, "getText", "()Ljava/lang/CharSequence;"));
-
-            showToast(env, thiz, env->GetStringUTFChars(text, JNI_FALSE), callback.toggled);
-        }
-    }
-};
+}
